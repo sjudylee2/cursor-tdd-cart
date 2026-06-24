@@ -26,8 +26,9 @@ def subtotal(items):
 
 
 def apply_threshold_discount(amount):
-    # TODO(INV-2): 경계 포함(>=) 10% 할인, 반올림
-    raise NotImplementedError
+    if amount >= THRESHOLD:  # INV-2 (경계 포함)
+        return round(amount * 0.9)  # INV-2
+    return amount  # INV-2
 
 
 def final_total(items, is_vip=False):
