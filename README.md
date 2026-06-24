@@ -26,14 +26,85 @@
 | E-1   | `items is None → TypeError`                                  | L0    | Boundary* |
 | E-2   | `price` 또는 `qty`가 음수 → `ValueError`, 인덱스 포함                  | L0    | Boundary* |
 
+## 계약 ID 설명
+
+### INV-1
+
+장바구니 소계는 각 품목의 `price × qty`를 모두 더한 값과 같아야 합니다. 순수 도메인 계산의 기본 불변식입니다.
+
+### INV-2
+
+문턱 할인 규칙입니다. 소계(또는 `amount`)가 50,000원 이상이면 `round(amount × 0.9)`를 적용하고, 50,000원 미만이면 할인 없이 그대로 반환합니다. 경계값 50,000원은 할인 적용 대상에 포함됩니다.
+
+### INV-3
+
+VIP 할인은 문턱 할인 **이후**에만 적용합니다. VIP 고객이면 문턱 할인 결과에 `round(× 0.95)`를 추가로 적용합니다. 적용 순서는 **문턱 → VIP**로 고정됩니다.
+
+### INV-4
+
+유효한 입력에 대해 최종 결제 금액(`final_total`)은 0 이상이며 소계(`subtotal`) 이하여야 합니다. 할인은 결제 금액을 늘리지 않습니다.
+
+### E-1
+
+`items`가 `None`이면 `TypeError`를 발생시킵니다. 입력 누락·타입 오류에 대한 경계 계약입니다.
+
+### E-2
+
+`price` 또는 `qty`가 음수이면 해당 인덱스를 포함한 `ValueError`를 발생시킵니다. 잘못된 입력을 0원 등으로 조용히 처리하지 않습니다.
+
+## 계층 의미
+
+### Entity
+
+`src/cart.py`는 **Entity 계층**입니다. Flask 등 외부 프레임워크를 import하지 않으며, 순수 도메인 계산 로직과 불변식(INV-*)을 담당합니다.
+
+### Boundary*
+
+E-1, E-2는 **Boundary*** 계약입니다. 원래는 HTTP 폼·API 등 입력 검증 경계에 가까운 규칙이지만, **현재 실습에서는 도메인 함수 진입점에서 검증**합니다.
+
+## 예상 파일 구조
+
+```text
+.
+├── README.md
+├── src/
+│   └── cart.py
+└── tests/
+    ├── entity/
+    │   └── test_cart.py
+    └── boundary/
+        └── test_app.py
+```
+
 ## TDD 진행 순서
 
 1. **RED** — 계약 ID별 실패 테스트를 작성합니다.
 2. **GREEN** — 해당 ID를 만족하는 **최소 구현**만 작성합니다.
 3. **REFACTOR** — 모든 테스트가 통과한 상태에서만 구조를 개선합니다.
 
+## REFACTOR 계획 (Track B · subtotal)
+
+E-2 검증을 `_validate_line_items(items)` private helper로 추출하는 리팩터입니다.
+
+| 항목 | 내용 |
+| ---- | ---- |
+| 목적 | Mixed Responsibilities 해소 — E-2만 분리, E-1은 `subtotal`에 유지 |
+| 변경 | `subtotal` 내 음수 검증 루프 → `_validate_line_items(items)` |
+| 변경 파일 | `src/cart.py`만 (`tests/` 수정 없음) |
+| 제외 | `sum()` 변환, 상수 추출, `apply_threshold_discount` / `final_total` / `THRESHOLD` |
+| 예상 diff | `cart.py` +3~5줄 |
+
 ## 테스트 실행
 
 ```bash
 pytest -q
 ```
+
+`-q`는 **quiet mode**입니다. 테스트 결과를 간략하게 출력합니다.
+
+## 구현 금지 사항
+
+- 할인 정책 추가 금지
+- 쿠폰, 세금, 배송비, 포인트 기능 추가 금지
+- ID에 없는 예외 처리 추가 금지
+- UI, CLI, DB, API 코드 추가 금지
