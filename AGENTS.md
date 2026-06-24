@@ -1,7 +1,7 @@
 # Repository instructions
  
 장바구니 할인 계산기 — Python 3.12, pytest 기반 Dual-Track TDD(C2C 추적) 프로젝트.
-이 파일은 백과사전이 아니라 "지도"다.
+이 파일은 백과사전이 아니라 “지도”다.
  
 ## 구조 (ECB)
 - src/cart.py : Entity(순수 로직·불변식). Flask 등 Boundary를 import 하지 않는다.
@@ -25,7 +25,7 @@ ID가 없는 동작은 구현하지 않는다.
 - Boundary만 : `pytest tests/boundary -q`
  
 ## 워크플로 — ARRR (RED → GREEN → REFACTOR)
-- 테스트를 먼저 쓴다. 구현보다 "실패하는 테스트"가 항상 앞선다.
+- 테스트를 먼저 쓴다. 구현보다 “실패하는 테스트”가 항상 앞선다.
 - RED: tests/ 만 수정. src/ 는 건드리지 않는다.
 - GREEN: 실패를 통과시키는 최소 구현만. 구현 줄에 충족한 계약 ID(INV-*/E-*)를 주석으로 단다.
 - REFACTOR: 전부 통과한 뒤에만 구조 정리. 정리 전후로 `pytest -q`로 동작 불변 확인.
