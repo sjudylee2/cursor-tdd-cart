@@ -10,6 +10,7 @@ E-2   price/qty 음수 → ValueError(인덱스 포함)
 """
 
 THRESHOLD = 50000  # INV-2 문턱 금액 (SSOT)
+THRESHOLD_RATE = 0.9  # INV-2 문턱 할인율 (SSOT)
 
 
 def _validate_line_items(items):
@@ -27,7 +28,7 @@ def subtotal(items):
 
 def apply_threshold_discount(amount):
     if amount >= THRESHOLD:  # INV-2 (경계 포함)
-        return round(amount * 0.9)  # INV-2
+        return round(amount * THRESHOLD_RATE)  # INV-2
     return amount  # INV-2
 
 
