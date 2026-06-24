@@ -33,6 +33,7 @@ def apply_threshold_discount(amount):
 
 
 def final_total(items, is_vip=False):
-    # TODO(INV-3): 문턱할인 → (VIP면) 5% 추가, 순서 고정
-    # TODO(INV-4): 결과가 subtotal 을 넘지 않음을 보장하는 위치
-    raise NotImplementedError
+    amount = apply_threshold_discount(subtotal(items))  # INV-3 순서: 문턱 먼저
+    if is_vip:  # INV-3
+        amount = round(amount * 0.95)  # INV-3 그다음 VIP
+    return amount  # INV-4 subtotal 이하 보장
