@@ -84,15 +84,28 @@ E-1, E-2는 **Boundary*** 계약입니다. 원래는 HTTP 폼·API 등 입력 �
 
 ## REFACTOR 계획 (Track B · subtotal)
 
-E-2 검증을 `_validate_line_items(items)` private helper로 추출하는 리팩터입니다.
+E-2 검증을 `_validate_line_items(items)`로 추출하는 리팩터입니다. `subtotal` 시그니처는 불변입니다.
 
 | 항목 | 내용 |
 | ---- | ---- |
 | 목적 | Mixed Responsibilities 해소 — E-2만 분리, E-1은 `subtotal`에 유지 |
-| 변경 | `subtotal` 내 음수 검증 루프 → `_validate_line_items(items)` |
+| 변경 | `subtotal` 내 음수 검증 루프 → `_validate_line_items(items)` 호출 |
 | 변경 파일 | `src/cart.py`만 (`tests/` 수정 없음) |
 | 제외 | `sum()` 변환, 상수 추출, `apply_threshold_discount` / `final_total` / `THRESHOLD` |
 | 예상 diff | `cart.py` +3~5줄 |
+
+### 동작 불변 체크리스트
+
+| 계약 ID | 입력 | 기대 (추출 전후 동일) |
+| ------- | ---- | --------------------- |
+| E-1 | `subtotal(None)` | `TypeError` |
+| E-2 | `[{price:1000,qty:1}, {price:500,qty:-2}]` | `ValueError`, 메시지에 인덱스(`index 1`) 포함 |
+| INV-1 | `[{price:1000,qty:3}, {price:2000,qty:2}]` | `7000` |
+
+### 완료 기준
+
+- REFACTOR **전** `pytest -q` GREEN
+- REFACTOR **후** `pytest -q` GREEN (동작 불변)
 
 ## 테스트 실행
 
