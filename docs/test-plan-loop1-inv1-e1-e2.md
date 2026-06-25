@@ -6,7 +6,7 @@
 | 대상 함수 | `subtotal(items)` (`src/cart.py`) |
 | 트랙 | Track B Entity + Boundary* |
 | 사이클 | RED → GREEN → (선택) REFACTOR |
-| 참조 | [README.md](../README.md) 계약 ID 목록 |
+| 참조 | [README.md](../README.md) 계약 ID 목록 · [traceability-matrix.md](traceability-matrix.md) (전체 SSOT) |
 
 ---
 
@@ -36,6 +36,7 @@
 
 ```python
 def test_inv_1_subtotal_sums_price_times_qty():
+    refresh
     """INV-1: subtotal([{price:1000,qty:3},{price:2000,qty:2}]) == 7000"""
     items = [{"price": 1000, "qty": 3}, {"price": 2000, "qty": 2}]
     assert subtotal(items) == 7000
@@ -112,7 +113,7 @@ def test_e_2_negative_qty_reports_index():
 | GREEN | `feat(entity): subtotal 최소 구현 INV-1, E-1, E-2 [GREEN]` |
 | REFACTOR | `refactor(entity): E-2 검증 _validate_line_items 추출 [REFACTOR]` |
 
-## 추적성 (계약 ID ↔ TC ↔ 테스트 ↔ 구현)
+## 추적성 (Loop 1 부분 — 전체는 [traceability-matrix.md](traceability-matrix.md))
 
 | 계약 ID | TC ID | 테스트 함수 | 구현 위치 |
 |---------|-------|-------------|-----------|
@@ -122,6 +123,6 @@ def test_e_2_negative_qty_reports_index():
 
 ## 완료 기준
 
-- [ ] TC-INV-1-01, TC-E-1-01, TC-E-2-01 전부 PASS
-- [ ] 구현 줄에 계약 ID 주석
-- [ ] TC에 없는 동작·우회(0원 처리, skip) 없음
+- [x] TC-INV-1-01, TC-E-1-01, TC-E-2-01 전부 PASS
+- [x] 구현 줄에 계약 ID 주석
+- [x] TC에 없는 동작·우회(0원 처리, skip) 없음

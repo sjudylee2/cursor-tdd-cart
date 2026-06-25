@@ -26,6 +26,19 @@
 | E-1   | `items is None → TypeError`                                  | L0    | Boundary* |
 | E-2   | `price` 또는 `qty`가 음수 → `ValueError`, 인덱스 포함                  | L0    | Boundary* |
 
+## 추적성 매트릭스
+
+계약 ID ↔ TC ↔ 테스트 ↔ 구현 전체 매핑은 [docs/traceability-matrix.md](docs/traceability-matrix.md)가 SSOT입니다.
+
+| 계약 ID | TC ID | 테스트 함수 | 구현 |
+|---------|-------|-------------|------|
+| INV-1 | TC-INV-1-01 | `test_inv_1_subtotal_sums_price_times_qty` | `subtotal()` `# INV-1` |
+| INV-2 | TC-INV-2-01, TC-INV-2-02 | `test_inv_2_threshold_discount_at_boundary`, `test_inv_2_threshold_discount_below_boundary` | `apply_threshold_discount()` `# INV-2` |
+| INV-3 | TC-INV-3-01 | `test_inv_3_final_total_vip_after_threshold` | `final_total()` `# INV-3` |
+| INV-4 | TC-INV-4-01 | `test_inv_4_final_total_bounded_by_subtotal` | `final_total()` `# INV-4` |
+| E-1 | TC-E-1-01 | `test_e_1_none_items_raises_type_error` | `subtotal()` `# E-1` |
+| E-2 | TC-E-2-01 | `test_e_2_negative_qty_reports_index` | `_validate_line_items()` `# E-2` |
+
 ## 계약 ID 설명
 
 ### INV-1
